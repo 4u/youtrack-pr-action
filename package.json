@@ -4,11 +4,10 @@
   "description": "YouTrack Action on PullRequest",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "act -e act/pull-request.json",
-    "start": "node dist/index.js",
+    "dev": "act -e act/pull-request.json .github/workflows/local.yml",
+    "start": "ncc run ./src/index.ts",
     "lint": "eslint --max-warnings=0",
-    "build": "tsc",
-    "package": "ncc build --source-map --out dist out",
+    "build": "ncc build --source-map ./src/index.ts",
     "test": "jest"
   },
   "repository": {
