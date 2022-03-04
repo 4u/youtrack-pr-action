@@ -4,7 +4,7 @@
   "description": "YouTrack Action on PullRequest",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "act -e act/pull-request.json .github/workflows/local.yml",
+    "dev": "act -e act/pull-request.json -j local",
     "start": "ncc run ./src/index.ts",
     "lint": "eslint --max-warnings=0",
     "build": "ncc build --source-map ./src/index.ts",

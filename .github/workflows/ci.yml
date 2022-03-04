@@ -9,7 +9,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: ${{ !env.ACT }}
 
     steps:
       - uses: actions/checkout@v2
