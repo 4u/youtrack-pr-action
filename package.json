@@ -7,7 +7,7 @@
     "dev": "act -e act/pull-request.json -j local",
     "start": "ncc run ./src/index.ts",
     "lint": "eslint --max-warnings=0",
-    "build": "ncc build --source-map ./src/index.ts",
+    "build": "ncc build ./src/index.ts",
     "test": "jest"
   },
   "repository": {
