@@ -14,6 +14,13 @@ inputs:
   youtrack_command:
     required: true
     description: "YouTrack Command Query (e.g. 'State Fixed')"
+  base:
+    required: false
+    description: "Base SHA for manual commits list"
+  head:
+    required: false
+    description: "Head SHA for manual commits list"
+
 runs:
   using: "node12"
   main: "dist/index.js"

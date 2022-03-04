@@ -38,21 +38,61 @@ export function getPullRequest(): PullRequestType {
   return pr;
 }
 
-export async function getPullRequestCommits(pr: PullRequestType): Promise<CommitType[]> {
-  const githubCommits = await octokit.paginate(octokit.pulls.listCommits, {
+export async function getCommit(ref: string): Promise<CommitType> {
+  const githubCommit = await octokit.repos.getCommit({
     ...context.repo,
-    pull_number: pr.number,
+    ref,
   });
 
-  const issueIds = new Set<string>();
-  const issueIdsByCommitSha = new Map<string, string[]>();
-  githubCommits.map((commit) => {
+  const commits = addIssuesToCommits([githubCommit.data]);
+  if (commits[0]) {
+    return commits[0];
+  }
+
+  throw new Error(`Could not find ref "${ref}"`);
+}
+
+export async function getPullRequestIssues(pr: PullRequestType): Promise<IssueType[]> {
+  const commits = await getPullRequestCommits(pr);
+  const issues = new Map();
+  commits.forEach((commit) => commit.issues.forEach((issue) => issues.set(issue.id, issue)));
+
+  if (typeof pr.title === 'string') {
+    const titleIssues = await getIssuesList(extractIssueNumbers(pr.title));
+    titleIssues.forEach((issue) => issues.set(issue.id, issue));
+  }
+
+  return [...issues.values()];
+}
+
+type IssueIdsByCommitsType = {
+  ids: string[];
+  bySha: Map<string, string[]>;
+};
+
+export function getIssueIdsByCommits(
+  commits: Array<{sha: string; commit: {message: string}}>,
+): IssueIdsByCommitsType {
+  const ids = new Set<string>();
+  const bySha = new Map<string, string[]>();
+  commits.map((commit) => {
     const list = extractIssueNumbers(commit.commit.message);
-    list.map((id) => issueIds.add(id));
-    issueIdsByCommitSha.set(commit.sha, list);
+    list.map((id) => ids.add(id));
+    bySha.set(commit.sha, list);
   });
 
-  const issuesMap = (await getIssuesList([...issueIds])).reduce((next, issue) => {
+  return {
+    ids: [...ids],
+    bySha,
+  };
+}
+
+async function addIssuesToCommits(
+  githubCommits: Array<UnwrapOcktokitResponse<typeof octokit.repos.listCommits>[number]>,
+): Promise<CommitType[]> {
+  const {ids: issueIds, bySha: issueIdsByCommitSha} = getIssueIdsByCommits(githubCommits);
+
+  const issuesMap = (await getIssuesList(issueIds)).reduce((next, issue) => {
     next.set(issue.id, issue);
     return next;
   }, new Map<string, IssueType>());
@@ -65,6 +105,25 @@ export async function getPullRequestCommits(pr: PullRequestType): Promise<Commit
   });
 
   return commits;
+}
+
+export async function getPullRequestCommits(pr: PullRequestType): Promise<CommitType[]> {
+  const githubCommits = await octokit.paginate(octokit.pulls.listCommits, {
+    ...context.repo,
+    pull_number: pr.number,
+  });
+
+  return addIssuesToCommits(githubCommits);
+}
+
+export async function getCommitsBetween(base: string, head: string): Promise<CommitType[]> {
+  const githubCommits = await octokit.paginate(octokit.repos.compareCommits, {
+    ...context.repo,
+    base,
+    head,
+  });
+
+  return addIssuesToCommits(githubCommits.commits);
 }
 
 export async function getReviews(pullNumber: number, commitId?: string): Promise<ReviewType[]> {
