@@ -1,4 +1,4 @@
-name: "Action.ts"
+name: "youtrack-pr-action"
 description: "GitHub Actions starter for TypeScript with automated releases"
 author: "Koj <https://github.com/koj.co>"
 inputs:
@@ -18,5 +18,5 @@ runs:
   using: "node12"
   main: "dist/index.js"
 branding:
-  icon: "umbrella"
-  color: "purple"
+  icon: "move"
+  color: "blue"
