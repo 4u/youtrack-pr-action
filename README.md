@@ -1,3 +1,0 @@
-# Youtrack PR Action
-
-TBD
