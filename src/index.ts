@@ -14,7 +14,6 @@ async function getCommitsList() {
 export const run = async () => {
   const command = getInput('youtrack_command');
 
-  process.env.GITHUB_REPOSITORY = 'joomcode/joom-web-client';
   const commits = await getCommitsList();
   const issues = new Map();
   commits.forEach((commit) => commit.issues.forEach((issue) => issues.set(issue.id, issue)));
