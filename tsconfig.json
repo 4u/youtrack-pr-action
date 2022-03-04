@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "moduleResolution": "node",
+    "target": "es2015",
+    "module": "commonjs",
+    "lib": ["esnext"],
+    "allowJs": false,
+    "declaration": true,
+    "esModuleInterop": true,
+    "downlevelIteration": true,
+    "forceConsistentCasingInFileNames": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noUnusedLocals": true,
+    "strictNullChecks": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true,
+    "declarationDir": "./out",
+    "outDir": "./out",
+    "typeRoots": ["node_modules/@types", "@types"]
+  },
+  "include": ["src", "tooling"],
+  "exclude": ["node_modules"]
+}

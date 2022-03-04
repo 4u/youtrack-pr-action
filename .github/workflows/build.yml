@@ -1,0 +1,47 @@
+name: Build CI
+on:
+  push:
+    branches:
+      - master
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[skip ci]')"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.3.4
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      - name: Install dependencies
+        run: npm ci
+      - name: Build TypeScript
+        run: npm run build
+      - name: Run tests
+        run: npm run test
+      - name: Build package
+        run: npm run package
+      - name: Publish package
+        if: ${{ !env.ACT }}
+        uses: stefanzweifel/git-auto-commit-action@v4.9.2
+        with:
+          commit_message: ":rocket: Deploy new version [skip ci]"
+          commit_user_name: Auto Commit Bot
+          commit_user_email: bot@rururu.me
+          commit_author: Auto Commit Bot <bot@rururu.me>
+      - uses: ./
+        if: ${{ env.ACT }}
+        with:
+          youtrack_command: State In Progress
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          youtrack_token: ${{ secrets.YOUTRACK_TOKEN }}
+          youtrack_base_url: ${{ secrets.YOUTRACK_BASE_URL }}

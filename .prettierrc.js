@@ -1,0 +1,10 @@
+'use strict';
+
+module.exports = {
+  trailingComma: 'all',
+  arrowParens: 'always',
+  singleQuote: true,
+  jsxSingleQuote: false,
+  printWidth: 100,
+  bracketSpacing: false,
+};

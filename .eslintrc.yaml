@@ -1,0 +1,219 @@
+extends:
+  - plugin:import/errors
+  - plugin:import/warnings
+  - plugin:import/typescript
+  - plugin:@typescript-eslint/recommended
+  - airbnb
+  - airbnb/hooks
+  - prettier
+env:
+  browser: true
+  node: true
+parser: '@typescript-eslint/parser'
+rules:
+  # airbnb-whitespace includes disabled react/boolean-prop-naming
+  # in wrong way, so it doesn't work with eslint >=6.
+  # Just copy it and wait for fix.
+
+  ###################
+  # airbnb/whitespace
+  ###################
+  array-bracket-newline: error
+  array-bracket-spacing: error
+  array-element-newline: [error, consistent]
+  arrow-body-style: off
+  arrow-spacing: error
+  block-spacing: error
+  # allow this for inheritance
+  class-methods-use-this: off
+  comma-spacing: error
+  computed-property-spacing: error
+  dot-location: error
+  eol-last: error
+  func-call-spacing: error
+  # doesn't work with typescript return types
+  #function-paren-newline: [error, consistent]
+  generator-star-spacing: error
+  # doesn't work with prettier max len
+  #implicit-arrow-linebreak: error
+  # works wrong with prettier and typescript
+  #indent: error
+  key-spacing: error
+  keyword-spacing: error
+  line-comment-position: error
+  linebreak-style: error
+  # not useable in jsx
+  # multiline-ternary: error
+  newline-per-chained-call: error
+  # works wrong with react-intl <FormattedMessage />
+  no-irregular-whitespace: off
+  # do not use default props
+  react/require-default-props: off
+  no-mixed-spaces-and-tabs: error
+  no-multi-spaces: error
+  no-regex-spaces: error
+  no-spaced-func: error
+  no-trailing-spaces: error
+  no-unused-expressions: off
+  '@typescript-eslint/no-unused-expressions': 'error'
+  no-whitespace-before-property: error
+  nonblock-statement-body-position: error
+  # works incorrectly with enums
+  no-shadow: off
+  # works incorrectly with overloads
+  no-redeclare: off
+  object-curly-newline:
+    - error
+    - consistent: true
+  object-property-newline: error
+  one-var-declaration-per-line: error
+  operator-linebreak:
+    - error
+    - after
+    - overrides: {'?': 'before', ':': 'before'}
+  padded-blocks: error
+  padding-line-between-statements: error
+  prefer-arrow-callback:
+    - error
+    - allowNamedFunctions: true
+      allowUnboundThis: true
+  rest-spread-spacing: error
+  semi-spacing: error
+  semi-style: error
+  space-before-blocks: error
+  space-before-function-paren: error
+  space-in-parens: error
+  space-infix-ops: error
+  space-unary-ops: error
+  spaced-comment: error
+  switch-colon-spacing: error
+  template-tag-spacing: error
+  import/newline-after-import: error
+  # we use @typescript-eslint/no-unused-vars instead
+  no-unused-vars: off
+  # airbnb allows ternaries, just error in configuration
+  no-ternary: off
+  # this rule was renamed, anyway we don't need prop-types at all
+  # use only named exports (airbnb uses default)
+  import/no-default-export: error
+  # use only named exports (airbnb uses default)
+  import/no-named-export: off
+  # use only named exports (airbnb uses default)
+  import/prefer-default-export: off
+  # no reason to create jsdoc for typescript
+  require-jsdoc: off
+  # do not use curly spacing (airbnb uses it)
+  object-curly-spacing:
+    - error
+    - never
+  # lock JSX to .tsx files
+  react/jsx-filename-extension:
+    - error
+    - extensions: ['.tsx']
+  # airbnb has this rule, but we want to import internal modules
+  import/no-internal-modules: off
+  # aribnb has missconfiguration, just fix it
+  # does not work properly with typescript
+  import/no-unused-modules:
+    - off
+    # https://github.com/typescript-eslint/typescript-eslint/issues/371
+    - missingExports: true
+      unusedExports: true
+  # aribnb has this rule, but can not place static field outside react class for typo
+  react/static-property-placement: ['error', 'static public field']
+  # disable while no "allow" prop https://github.com/benmosher/eslint-plugin-import/issues/1118
+  import/no-relative-parent-imports: off
+  # no-undef works not properly for typescript
+  # https://github.com/typescript-eslint/typescript-eslint/issues/342
+  no-undef: off
+  no-undefined: off
+  # for optional chaining
+  '@typescript-eslint/no-unnecessary-type-assertion': error
+  # deprecated
+  prefer-reflect: off
+  # conflicts with import/order
+  sort-imports: off
+  # sort imports instead of sort-imports
+  simple-import-sort/imports: error
+  # allow immer mutations
+  no-param-reassign:
+    - error
+    - ignorePropertyModificationsFor: ['draft']
+  # decided on meeting to turn off this rule, because we have hoisting
+  # rules and we don't care about function declaration scope
+  func-style: off
+  # decided on meeting to turn off this rule, because we
+  # already have max file size and its enough for readability
+  import/group-exports: off
+  # does not work properly in stage3 class method definitions,
+  # like `method = () => {};`
+  no-invalid-this: off
+  # decided on meeting to turn off this rule
+  max-lines-per-function: off
+  # do need it for typescript
+  valid-jsdoc: off
+  # note you must disable the base rule as it can report incorrect errors
+  no-use-before-define: off
+  '@typescript-eslint/no-use-before-define': error
+  '@typescript-eslint/no-useless-constructor': error
+  # decided to use only explicit-module-boundary-types
+  '@typescript-eslint/explicit-function-return-type': off
+  '@typescript-eslint/explicit-module-boundary-types':
+    - error
+    - allowArgumentsExplicitlyTypedAsAny: false
+      allowDirectConstAssertionInArrowFunctions: true
+      allowedNames: []
+      allowHigherOrderFunctions: true
+      allowTypedFunctionExpressions: true
+  # want to allow for..of loops, because we use ES8 target
+  no-restricted-syntax:
+    - error
+    - selector: 'ForInStatement'
+      message: 'for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array.'
+    - selector: 'LabeledStatement'
+      message: 'Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand.'
+    - selector: 'WithStatement'
+      message: '`with` is disallowed in strict mode because it makes code impossible to predict and optimize.'
+  import/extensions:
+    - error
+    - ignorePackages
+    - ts: never
+      tsx: never
+      js: never
+      jsx: never
+      mjs: never
+overrides:
+  - files: ['*.d.ts']
+    rules:
+      # no-useless-constructor does not work properly for d.ts files
+      no-useless-constructor: off
+  - files: ['*.stories.tsx']
+    rules:
+      import/no-unresolved: off
+      import/no-extraneous-dependencies:
+        - error
+        - {devDependencies: true}
+      import/no-default-export: off
+      no-console: off
+  - files: ['**/src/**/*.spec.ts', '**/src/**/*.spec.tsx', '**/screenshot-tests/**/*.spec.ts']
+    env:
+      jest: true
+    extends: 'plugin:jest/all'
+    rules:
+      import/no-extraneous-dependencies:
+        - error
+        - {devDependencies: true}
+plugins:
+  - 'react'
+  - '@typescript-eslint'
+  - 'simple-import-sort'
+settings:
+  import/extensions: ['.js', '.jsx', '.ts', '.tsx']
+  import/parsers:
+    '@typescript-eslint/parser': ['.ts', '.tsx']
+  import/resolver:
+    node:
+      extensions: ['.js', '.jsx', '.ts', '.tsx']
+      moduleDirectory: ['node_modules', 'src/']
+  react:
+    version: detect
