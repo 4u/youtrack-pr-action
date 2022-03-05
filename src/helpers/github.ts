@@ -1,10 +1,10 @@
+import {getInput} from '@actions/core';
 import {context, getOctokit} from '@actions/github';
 import {GitHub} from '@actions/github/lib/utils';
-import {GITHUB_TOKEN} from './config';
 import {extractIssueNumbers} from './issue';
 import {UnwrapOcktokitResponse} from './types';
 
-const octokit: InstanceType<typeof GitHub> = getOctokit(GITHUB_TOKEN, {
+const octokit: InstanceType<typeof GitHub> = getOctokit(getInput('github_token'), {
   userAgent: 'youtrack-pr-action',
 });
 

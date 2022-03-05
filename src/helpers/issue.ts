@@ -5,7 +5,3 @@ export function extractIssueNumbers(string: string): string[] {
   string.match(ISSUE_PATTERN_RE)?.forEach((issue) => result.add(issue));
   return [...result];
 }
-
-export function uniqueIssues(list: string[]): string[] {
-  return [...new Set(list)];
-}
