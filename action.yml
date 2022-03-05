@@ -14,6 +14,9 @@ inputs:
   youtrack_command:
     required: true
     description: "YouTrack Command Query (e.g. 'State Fixed')"
+  youtrack_guard:
+    required: true
+    description: "YouTrack Search Guard (e.g. 'State: Open')"
   base:
     required: false
     description: "Base SHA for manual commits list"

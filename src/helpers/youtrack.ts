@@ -1,39 +1,42 @@
-import {debug, warning} from '@actions/core';
-import {Command, Issue, Youtrack} from 'youtrack-rest-client';
+import {Command, Issue, ReducedIssue, Youtrack} from 'youtrack-rest-client';
 import {YOUTRACK_BASE_URL, YOUTRACK_TOKEN} from './config';
-import {IssueCustomFieldValue} from 'youtrack-rest-client/dist/entities/issueCustomField';
 
 const youtrack = new Youtrack({
   baseUrl: YOUTRACK_BASE_URL,
   token: YOUTRACK_TOKEN,
 });
 
-export type IssueType = Issue & {
-  id: string;
-};
+export type IssueType = ReducedIssue & {idReadable: string};
 
-export async function getIssuesList(list: string[]): Promise<IssueType[]> {
-  const result = await Promise.all(list.map((id) => getIssueById(id)));
-  return result.filter(Boolean) as IssueType[];
+function idReadable(issue: ReducedIssue | Issue | IssueType): string {
+  if ('idReadable' in issue) {
+    return issue.idReadable;
+  }
+  if (issue.project?.shortName && issue.numberInProject) {
+    return `${issue.project.shortName}-${issue.numberInProject}`;
+  }
+  return '';
 }
 
-export const getIssueById = (id: string) =>
-  youtrack.issues
-    .byId(id)
-    .then((value) => ({
-      ...value,
-      id,
-    }))
-    .catch((err) => {
-      warning(`Can not get data for ${id} issue.`);
-      debug(err);
-    });
+export async function searchIssues(readableIds: string[], guard?: string): Promise<IssueType[]> {
+  const issuesQuery = `issue ID: ${readableIds.join(' or ')}`;
+  const query = guard ? `(${issuesQuery}) and (${guard})` : issuesQuery;
+  return youtrack.issues
+    .search(query, {
+      $top: 50,
+    })
+    .then((issues) =>
+      issues
+        .map((issue) => ({
+          ...issue,
+          idReadable: idReadable(issue),
+        }))
+        .filter((issue) => issue.idReadable),
+    );
+}
 
-export const getCommandIssues = (issues: (IssueType | string)[]): Command['issues'] => {
-  const list = issues.map((issue) => ({
-    idReadable: typeof issue === 'string' ? issue : issue.id,
-  }));
-  // api supports idReadable, but there are bad typeings for youtrack pacakges
+export const getCommandIssues = (issues: IssueType[]): Command['issues'] => {
+  const list = issues.map((issue) => ({idReadable: issue.idReadable}));
   return list as unknown as Array<{id: string}>;
 };
 
@@ -41,15 +44,3 @@ export const applyCommand = (command: Command) =>
   youtrack.issues
     .executeCommand(command)
     .catch((err) => console.error(`Can not apply command`, command, err));
-
-export function getIssueFieldValue(issue: Issue, name: string): IssueCustomFieldValue | undefined {
-  return issue.fields?.find((field) => field.name === name)?.value || undefined;
-}
-
-export function getIssueState(issue: Issue): string | undefined {
-  return getIssueFieldValue(issue, 'State')?.name;
-}
-
-export function getIssueUrl(id: string): string {
-  return `${YOUTRACK_BASE_URL}/issue/${id}`;
-}
