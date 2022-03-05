@@ -18,7 +18,7 @@ jobs:
         run: npm run build
       - uses: ./
         with:
-          youtrack_command: State In Progress
+          command: State In Progress
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          youtrack_token: ${{ secrets.YOUTRACK_TOKEN }}
-          youtrack_base_url: ${{ secrets.YOUTRACK_BASE_URL }}
+          token: ${{ secrets.token }}
+          base_url: ${{ secrets.base_url }}

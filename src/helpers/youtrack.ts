@@ -2,8 +2,8 @@ import {getInput} from '@actions/core';
 import {Command, Issue, ReducedIssue, Youtrack} from 'youtrack-rest-client';
 
 const youtrack = new Youtrack({
-  baseUrl: getInput('youtrack_base_url'),
-  token: getInput('youtrack_token'),
+  baseUrl: getInput('base_url'),
+  token: getInput('token'),
 });
 
 export type IssueType = ReducedIssue & {idReadable: string};

@@ -28,10 +28,10 @@ const getIssueIds = async () => {
 };
 
 export const run = async () => {
-  const command = getInput('youtrack_command');
-  const guard = getInput('youtrack_guard');
+  const command = getInput('command');
+  const guard = getInput('if');
   if (!command) {
-    throw new Error('`youtrack_command` is not specified.');
+    throw new Error('`command` is not specified.');
   }
 
   const readableIds = await getIssueIds();

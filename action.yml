@@ -2,19 +2,19 @@ name: "youtrack-pr-action"
 description: "GitHub Actions starter for TypeScript with automated releases"
 author: "Koj <https://github.com/koj.co>"
 inputs:
-  youtrack_token:
-    required: true
-    description: "YouTrack Token"
-  youtrack_base_url:
-    required: true
-    description: "YouTrack URL"
   github_token:
     required: true
     description: "GitHub Token"
-  youtrack_command:
+  token:
+    required: true
+    description: "YouTrack Token"
+  base_url:
+    required: true
+    description: "YouTrack URL"
+  command:
     required: true
     description: "YouTrack Command Query (e.g. 'State Fixed')"
-  youtrack_guard:
+  if:
     required: true
     description: "YouTrack Search Guard (e.g. 'State: Open')"
   base:
