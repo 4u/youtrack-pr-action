@@ -35,7 +35,22 @@ export const run = async () => {
   }
 
   const readableIds = await getIssueIds();
+  if (!readableIds.length) {
+    console.log(`Can not find YouTrack IDs`);
+    return;
+  }
+
   const issues = await searchIssues(readableIds, guard);
+  if (!issues.length) {
+    console.log(`Can not find any issues by given IDs: ${readableIds.length}.`);
+    console.log(`Usually it happens when YouTrack issue number misstyped or guard is too strong.`);
+    console.log(`Applied guard: ${guard}`);
+    return;
+  }
+
+  console.log(`Extracted issue IDs on GitHub: ${readableIds.join(', ')}`);
+  console.log(`Found issues on YouTrack: ${issues.map((issue) => issue.idReadable).join(', ')}`);
+  console.log(`Query: ${command}`);
 
   await applyCommand({
     query: command,
